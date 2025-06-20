@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Playwright
+playwright-report/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Env/config
+.env
+venv
+*.env
+notion-k8s-secret.yaml
+config/cookies.json
+
+# Docker
+*.log
+dist/
+build/
+
+# Test
+.pytest_cache/
+
+# Kubernetes
+*.yaml
+!cronjob.yaml
+!deployment.yaml
+!service.yaml
+!README.md 

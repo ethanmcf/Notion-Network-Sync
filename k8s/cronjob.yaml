@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: linkedin-notion-sync
+spec:
+  schedule: "0 */6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: linkedin-sync
+              image: your-docker-repo/linkedin-sync:latest
+              command: ["python", "/app/main.py"]
+              envFrom:
+                - secretRef:
+                    name: linkedin-notion-secrets
+              volumeMounts:
+                - name: cookies
+                  mountPath: /app/cookies
+          restartPolicy: OnFailure
+          volumes:
+            - name: cookies
+              emptyDir: {}
