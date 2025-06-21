@@ -17,8 +17,7 @@ playwright-report/
 .env
 venv
 *.env
-notion-k8s-secret.yaml
-config/cookies.json
+*/cookies.json
 
 # Docker
 *.log
@@ -33,4 +32,3 @@ build/
 !cronjob.yaml
 !deployment.yaml
 !service.yaml
-!README.md 
