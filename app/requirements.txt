@@ -1,3 +1,5 @@
 playwright
 notion-client
-python-dotenv 
+python-dotenv
+azure-ai-inference
+azure-core 

@@ -1,7 +1,6 @@
 import os
 import json
 import re
-import time
 from datetime import date
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
