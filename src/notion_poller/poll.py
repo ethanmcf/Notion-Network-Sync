@@ -8,8 +8,8 @@ DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 def poll_notion():
     db.create_table() # create table if it doesn't exist
-    # pages = notion.get_pages_and_update_times() # returns list of page ids
-    pages = [("1f5633fa-e4f4-80e0-a86f-c390eaaaa0fe", "2024-01-01")]
+    pages = notion.get_pages_and_update_times() # returns list of page ids
+    # pages = [("1f5633fa-e4f4-80e0-a86f-c390eaaaa0fe", "2024-01-01")]
     print(f"Polling {len(pages)} pages")
     for page_id, date_updated in pages:
         last_updated = db.get_page_date_updated(page_id)
