@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
+*.egg
+build/
+dist/
 
 # Playwright
 playwright-report/
@@ -17,12 +21,13 @@ playwright-report/
 .env
 venv
 *.env
-*/cookies.json
+src/linkedin_scraper/config/cookies.json
 
 # Docker
 *.log
-dist/
-build/
+
+# Database
+src/notion_poller/notion_data.db
 
 # Test
 .pytest_cache/

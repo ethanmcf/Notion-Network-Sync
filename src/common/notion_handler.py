@@ -9,7 +9,7 @@ DATABASE_ID = os.getenv("DATABASE_ID")
 
 notion = Client(auth=NOTION_API_KEY)
 
-def parse_notion_contact(page_json):
+def _parse_notion_contact(page_json):
     props = page_json.get("properties", {})
 
     def extract_title(prop):
@@ -25,19 +25,12 @@ def parse_notion_contact(page_json):
     info = {
         "Company": extract_rich_text(props.get("Company", {})),
         "Last Communicated": extract_date(props.get("Last Communicated", {})),
-        "URL": page_json.get("url")
+        "LinkedIn URL": page_json.get("url")
     }
+    # TODO: Add formatted notes and personal notes, email, phone, 
     return name, info
-    
 
-def get_contacts_from_notion():
-        contacts = {}
-        for entry in notion.databases.query(DATABASE_ID)["results"]:
-            name, info = parse_notion_contact(entry)
-            contacts[name] = info
-        return contacts
-
-def create_heading_block(text, level=2):
+def _create_heading_block(text, level=2):
     block_type = f"heading_{level}"
     return {
         "object": "block",
@@ -47,7 +40,7 @@ def create_heading_block(text, level=2):
         },
     }
 
-def create_paragraph_block(text, link=None):
+def _create_paragraph_block(text, link=None):
     text_obj = {"type": "text", "text": {"content": text}}
     if link:
         text_obj["text"]["link"] = {"url": link}
@@ -57,24 +50,35 @@ def create_paragraph_block(text, link=None):
         "paragraph": {"rich_text": [text_obj]},
     }
 
+def get_contacts_from_notion():
+        contacts = {}
+        for entry in notion.databases.query(DATABASE_ID)["results"]:
+            name, info = _parse_notion_contact(entry)
+            contacts[name] = info
+        return contacts
+
 def create_contact_page(contact):
     email = contact.get("Email", "")
     phone = contact.get("Phone", "")
     linkedin_url = contact.get("LinkedIn URL", "")
-    notes = contact.get("Notes", "")
+    formatted_notes = contact.get("Formatted Notes", "")
+    personal_notes = contact.get("Personal Notes", "")
 
     children = [
-        create_heading_block("Email"),
-        create_paragraph_block(email),
+        _create_heading_block("Email"),
+        _create_paragraph_block(email),
 
-        create_heading_block("Phone"),
-        create_paragraph_block(phone),
+        _create_heading_block("Phone"),
+        _create_paragraph_block(phone),
 
-        create_heading_block("Linkedin"),
-        create_paragraph_block(linkedin_url, link=linkedin_url),
+        _create_heading_block("Linkedin"),
+        _create_paragraph_block(linkedin_url, link=linkedin_url),
 
-        create_heading_block("Notes"),
-        create_paragraph_block(notes),
+        _create_heading_block("Personal Notes"),
+        _create_paragraph_block(personal_notes),
+        
+        _create_heading_block("Formatted Notes"),
+        _create_paragraph_block(formatted_notes),
     ]
     
     notion.pages.create(
@@ -106,7 +110,46 @@ def update_contact_page(contact):
             "Last Communicated": {"date": {"start": contact["Date Messaged"]}},
         },
     )
+
+def get_page_notes(page_id):
+    blocks = notion.blocks.children.list(page_id)["results"]
+    notes = []
+    capture = False
+    for block in blocks:
+        if block["type"] == "heading_2" and "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]:
+            capture = True
+            continue
+        if capture and block["type"] == "paragraph":
+            text = block["paragraph"]["rich_text"]
+            if text:
+                notes.append(text[0]["text"]["content"])
+    return "\n".join(notes)
+
+def update_page_formatted_notes(page_id, formatted_notes):
+    # Clear formated notes
+    blocks = notion.blocks.children.list(page_id)["results"]
+    capture = False
+    for block in blocks:
+        if block["type"] == "heading_2" and "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]:
+            capture = True
+            continue
+        if capture and block["type"] == "paragraph":
+            notion.blocks.delete(block["id"])
     
+    # Add new formatted notes
+    children = [
+        _create_paragraph_block(formatted_notes)
+    ]
+    notion.blocks.children.append(page_id, children=children)
+
+def get_pages_and_update_times():
+    pages = []
+    for entry in notion.databases.query(database_id=DATABASE_ID)["results"]:
+        page_id = entry["id"]
+        date_updated = entry["last_edited_time"]
+        pages.append((page_id, date_updated))
+    return pages
+
 def add_contacts_to_notion(contacts):
     saved_contacts = get_contacts_from_notion()
     for contact in contacts:

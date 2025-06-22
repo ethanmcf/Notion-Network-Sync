@@ -11,7 +11,7 @@ ENDPOINT = "https://models.github.ai/inference"
 MODEL = "openai/gpt-4.1"
 
 def create_prompt(prompt_file, notes=""):
-    with open(f"common/prompts/{prompt_file}.txt", "r") as file:
+    with open(f"src/common/prompts/{prompt_file}.txt", "r") as file:
         prompt = file.read()
     return prompt.format(notes=notes)
 
@@ -32,4 +32,4 @@ def generate_response(notes):
         model=MODEL
     )
 
-    print(response.choices[0].message.content)
+    return response.choices[0].message.content

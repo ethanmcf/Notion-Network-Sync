@@ -1,5 +1,0 @@
-playwright
-notion-client
-python-dotenv
-azure-ai-inference
-azure-core 
