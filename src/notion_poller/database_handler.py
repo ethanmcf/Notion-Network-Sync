@@ -1,6 +1,10 @@
 import sqlite3
+import os
+from dotenv import load_dotenv
 
-DATABASE_NAME = "src/notion_poller/notion_data.db"
+load_dotenv()
+
+DATABASE_NAME = os.getenv("SQLITE_DATABASE_PATH")
 
 def get_connection():
     return sqlite3.connect(DATABASE_NAME)   

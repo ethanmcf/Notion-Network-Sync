@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
-DATABASE_ID = os.getenv("DATABASE_ID")
+DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 notion = Client(auth=NOTION_API_KEY)
 
@@ -116,7 +116,12 @@ def get_page_notes(page_id):
     notes = []
     capture = False
     for block in blocks:
-        if block["type"] == "heading_2" and "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]:
+        if (
+            block["type"] == "heading_2" and \
+            len(block["heading_2"]["rich_text"]) > 0 and \
+            "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]
+        ):
+
             capture = True
             continue
         if capture and block["type"] == "paragraph":
@@ -130,7 +135,11 @@ def update_page_formatted_notes(page_id, formatted_notes):
     blocks = notion.blocks.children.list(page_id)["results"]
     capture = False
     for block in blocks:
-        if block["type"] == "heading_2" and "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]:
+        if (
+            block["type"] == "heading_2" and \
+            len(block["heading_2"]["rich_text"]) > 0 and \
+            "Formatted Notes" in block["heading_2"]["rich_text"][0]["text"]["content"]
+        ):
             capture = True
             continue
         if capture and block["type"] == "paragraph":

@@ -28,12 +28,12 @@ def login_and_save_cookies(page):
     print("Waiting for page to load...")
     page.wait_for_load_state("load")
 
-    print("Saving cookies...")
-    cookies = page.context.cookies()
-    os.makedirs(os.path.dirname(COOKIES_PATH), exist_ok=True)
-    with open(COOKIES_PATH, "w") as f:
-        import json
-        json.dump(cookies, f)
+    # print("Saving cookies...")
+    # cookies = page.context.cookies()
+    # os.makedirs(os.path.dirname(COOKIES_PATH), exist_ok=True)
+    # with open(COOKIES_PATH, "w") as f:
+    #     import json
+    #     json.dump(cookies, f)
 
 def load_cookies(context):
     if os.path.exists(COOKIES_PATH):
@@ -129,9 +129,12 @@ def extract_current_company(user_page):
     
 def get_recent_contacts():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, slow_mo=500)
-        context = browser.new_context()
-        load_cookies(context)
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+            viewport={"width": 1280, "height": 800}
+        )
+        # load_cookies(context)
 
         page = context.new_page()
         page.goto("https://www.linkedin.com/messaging/")
@@ -143,6 +146,9 @@ def get_recent_contacts():
             print("Already logged in")
 
         print("Scraping recent contacts...")
+        captcha_frame = page.query_selector("iframe[src*='recaptcha']")
+        if captcha_frame:
+            print("Google reCAPTCHA detected")
         page.wait_for_selector("li[id*='ember'].msg-conversation-listitem", timeout=10000)
         contact_elements = page.query_selector_all("li[id*='ember'].msg-conversation-listitem")
 

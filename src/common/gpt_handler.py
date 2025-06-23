@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-ENDPOINT = "https://models.github.ai/inference"
+ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 MODEL = "openai/gpt-4.1"
 
 def create_prompt(prompt_file, notes=""):

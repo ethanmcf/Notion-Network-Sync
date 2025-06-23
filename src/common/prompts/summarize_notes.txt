@@ -24,6 +24,10 @@ Preserve any standout quotes if they’re short and insightful
 
 Assume the reader is a university student or junior SWE aiming for top tech roles
 
+Provide your response in normal language (not markdown) so it has simple notation
+
+This must be stricly less than 2000 characters
+
 I'll paste my notes below.
 
 {notes}

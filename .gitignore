@@ -27,7 +27,7 @@ src/linkedin_scraper/config/cookies.json
 *.log
 
 # Database
-src/notion_poller/notion_data.db
+src/notion_poller/data/*
 
 # Test
 .pytest_cache/

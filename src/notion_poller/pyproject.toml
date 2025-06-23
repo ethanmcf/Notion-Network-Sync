@@ -5,11 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "notion-network-sync"
 version = "0.1.0"
-description = "LinkedIn to Notion networking data sync automation"
-authors = [{name = "Your Name"}]
+description = "LinkedIn to Notion networking data poller"
+authors = [{name = "Ethan McFarland"}]
 requires-python = ">=3.8"
 dependencies = [
-    "playwright",
     "notion-client",
     "python-dotenv", 
     "azure-ai-inference",
@@ -17,5 +16,5 @@ dependencies = [
 ] 
 
 [tool.setuptools]
-packages = ["common", "linkedin_scraper", "notion_poller"]
+packages = ["common", "notion_poller"]
 package-dir = {"" = "src"}

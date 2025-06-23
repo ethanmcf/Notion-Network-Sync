@@ -1,0 +1,33 @@
+services:
+  linkedin-scraper:
+    build:
+      context: src/
+      dockerfile: linkedin_scraper/Dockerfile.linkedin-scraper
+    environment:
+      - NOTION_API_KEY=${NOTION_API_KEY}
+      - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
+      - LINKEDIN_EMAIL=${LINKEDIN_EMAIL}
+      - LINKEDIN_COOKIES_PATH=${LINKEDIN_COOKIES_PATH}
+      - LINKEDIN_PASSWORD=${LINKEDIN_PASSWORD}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - ./src/linkedin_scraper/config:/app/src/linkedin_scraper/config
+      - ./src/notion_poller:/app/src/notion_poller
+    profiles:
+      - scraper
+
+  notion-poller:
+    build:
+      context: src/
+      dockerfile: notion_poller/Dockerfile.notion-poller
+    environment:
+      - NOTION_API_KEY=${NOTION_API_KEY}
+      - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
+    volumes:
+      - ./src/notion_poller:/app/src/notion_poller
+    profiles:
+      - poller 

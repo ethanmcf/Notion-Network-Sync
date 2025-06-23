@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notion-network-sync"
+version = "0.1.0"
+description = "LinkedIn to Notion networking data scraper"
+authors = [{name = "Ethan McFarland"}]
+requires-python = ">=3.8"
+dependencies = [
+    "playwright",
+    "notion-client",
+    "python-dotenv", 
+    "azure-ai-inference",
+    "azure-core",
+] 
+
+[tool.setuptools]
+packages = ["common", "linkedin_scraper"]
+package-dir = {"" = "src"}

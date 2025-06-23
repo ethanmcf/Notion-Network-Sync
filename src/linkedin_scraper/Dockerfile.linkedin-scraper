@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/playwright/python:v1.52.0-jammy
+
+WORKDIR /app
+
+# Copy source code
+COPY common ./src/common
+COPY linkedin_scraper ./src/linkedin_scraper
+
+
+# Copy requirements and install Python dependencies
+COPY linkedin_scraper/pyproject.toml .
+RUN pip install --no-cache-dir -e .
+
+# Set environment variables
+ENV PYTHONPATH=/app/src
+
+# Run the linkedin scraper
+CMD ["python", "-m", "linkedin_scraper.scrape"] 

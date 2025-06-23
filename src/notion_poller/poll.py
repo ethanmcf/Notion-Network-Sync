@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-import database_handler as db 
+from notion_poller import database_handler as db
 from common import notion_handler as notion
 from common import gpt_handler as gpt
 
