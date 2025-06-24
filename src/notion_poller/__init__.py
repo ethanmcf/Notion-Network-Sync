@@ -1,4 +1,4 @@
-from .poll import *
+from .poller import *
 from .database_handler import *
 
-__all__ = ['poll', 'database_handler']
+__all__ = ['poller', 'database_handler']

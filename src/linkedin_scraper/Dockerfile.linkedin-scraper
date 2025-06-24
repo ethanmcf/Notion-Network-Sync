@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir -e .
 ENV PYTHONPATH=/app/src
 
 # Run the linkedin scraper
-CMD ["python", "-m", "linkedin_scraper.scrape"] 
+CMD ["python", "-m", "linkedin_scraper.scraper"] 

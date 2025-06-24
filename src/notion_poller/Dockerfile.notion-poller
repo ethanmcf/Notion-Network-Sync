@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -e .
 ENV PYTHONPATH=/app/src
 
 # Run the notion poller
-CMD ["python", "-m", "notion_poller.poll"] 
+CMD ["python", "-m", "notion_poller.poller"] 

@@ -1,4 +1,4 @@
-from .scrape import *
+from .scraper import *
 from .linkedin_handler import *
 
-__all__ = ['main', 'linkedin_handler']
+__all__ = ['scraper', 'linkedin_handler']

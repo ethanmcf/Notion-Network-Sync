@@ -4,6 +4,7 @@ import re
 from datetime import date
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
+from linkedin_scraper import database_handler as db
 
 load_dotenv()
 
@@ -126,7 +127,37 @@ def extract_current_company(user_page):
     company_string = company_btn.get_attribute("aria-label") if company_btn else ""
     match = re.search(r'Current company:\s*(.*?)\.', company_string)
     return match.group(1).strip() if match else "N/A"
+
+def mark_unread(page, contact, date_messaged, name):
+    page.wait_for_selector("div[id*='message-list-ember']", timeout=5000)
+    messages = page.query_selector("div[id*='message-list-ember']")
+    message_list = messages.query_selector_all("span[class*='msg-s-message-group__profile-link msg-s-message-group__name']")
+
+    if message_list[-1].inner_text().strip() != name:
+        # You were not the last person to message this person, so you can't mark it as unread
+        return
     
+    contact_date_updated = db.get_contact_date_updated(name)
+    if contact_date_updated is None or contact_date_updated < date_messaged:
+        if contact_date_updated is None:
+            db.add_contact(name, date_messaged)
+        else:
+            db.update_contact_date_updated(name, date_messaged)
+
+        try:
+            # Click the "More options" (ellipsis) menu
+            more_button = contact.query_selector('button:has(span:has-text("Open the options"))')
+            if more_button:
+                more_button.click()
+
+                # Wait for the dropdown and click "Mark as unread"
+                unread_option = contact.wait_for_selector('div[role="button"]:has-text("Mark as unread")')
+                if contact.query_selector('div[role="button"]:has-text("Mark as unread")'):
+                    unread_option.click()
+                    print(f"Marked {name} as unread again")
+        except Exception as e:
+            print(f"Could not mark {name} as unread: {e}")
+
 def get_recent_contacts():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -149,12 +180,15 @@ def get_recent_contacts():
         captcha_frame = page.query_selector("iframe[src*='recaptcha']")
         if captcha_frame:
             print("Google reCAPTCHA detected")
+
         page.wait_for_selector("li[id*='ember'].msg-conversation-listitem", timeout=10000)
         contact_elements = page.query_selector_all("li[id*='ember'].msg-conversation-listitem")
 
         scraped_contacts = []
-        for contact in contact_elements[:10]:  # Limit to 10 contacts
+        for contact in contact_elements[:3]:  # Limit to 10 contacts
             try:
+                # unread = True if contact.query_selector(".msg-conversation-card__unread-count .notification-badge__count") else False
+                
                 name, date_messaged = extract_contact_info(contact)
                 print(f"Opening conversation with {name} on {date_messaged}")
 
@@ -165,6 +199,9 @@ def get_recent_contacts():
                 clickable.click()
 
                 linkedin_url = extract_profile_url(page)
+
+                mark_unread(page, contact, date_messaged,name) # Marks unread if it was unread
+
                 with context.new_page() as user_page:
                     user_page.goto(linkedin_url)
                     user_page.wait_for_load_state("load")
@@ -181,6 +218,8 @@ def get_recent_contacts():
             except Exception as e:
                 print(f"Failed to process contact: {e}")
                 continue
+            finally:
+                print("")
 
         print(f"Scraped {len(scraped_contacts)} contacts.")
         browser.close()

@@ -71,7 +71,6 @@ LINKEDIN_PASSWORD=your_password
 
 # OpenAI GPT
 GITHUB_TOKEN=your_key
-AZURE_OPENAI_ENDPOINT="https://models.github.ai/inference"
 ```
 
 ### 4. Build and Run Locally with Docker Compose
@@ -85,7 +84,7 @@ docker compose run --rm linkedin-scraper
 
 ### Notion Poller
 
-```
+```bash
 docker compose build notion-poller
 docker compose run --rm notion-poller
 ```
