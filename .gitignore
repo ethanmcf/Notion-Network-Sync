@@ -27,13 +27,14 @@ src/linkedin_scraper/config/cookies.json
 *.log
 
 # Database
-src/notion_poller/data/*
+src/notion_poller/data/notion_data.db
+src/linkedin_scraper/data/linkedin_data.db
 
 # Test
 .pytest_cache/
 
 # Kubernetes
-*.yaml
-!cronjob.yaml
-!deployment.yaml
-!service.yaml
+minikube-darwin-amd64
+
+# Flags
+flags/

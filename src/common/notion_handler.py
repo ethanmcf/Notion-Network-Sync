@@ -156,7 +156,8 @@ def get_pages_and_update_times():
     for entry in notion.databases.query(database_id=DATABASE_ID)["results"]:
         page_id = entry["id"]
         date_updated = entry["last_edited_time"]
-        pages.append((page_id, date_updated))
+        name = entry["properties"]["Name"]["title"][0]["plain_text"]
+        pages.append((page_id, date_updated, name))
     return pages
 
 def add_contacts_to_notion(contacts):

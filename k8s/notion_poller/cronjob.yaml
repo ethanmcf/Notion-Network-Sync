@@ -1,28 +1,23 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: linkedin-scraper
+  name: notion-poller-cronjob
 spec:
-  schedule: "0 */6 * * *" # Every 6 hours
+  schedule: "0 * * * *" # every hour
   jobTemplate:
+    metadata:
+      name: notion-poller-cronjob
     spec:
       template:
         spec:
           containers:
-            - name: linkedin-scraper
-              image: your-registry/linkedin-scraper:latest
-              envFrom:
-                - secretRef:
-                    name: notion-network-secrets
+            - name: notion-poller-cronjob
+              image: notion-poller
               volumeMounts:
-                - name: cookies-volume
-                  mountPath: /app/src/linkedin_scraper/config
-                - name: shared-storage
-                  mountPath: /app/src/notion_poller
-          restartPolicy: OnFailure
+                - name: notion-poller-storage
+                  mountPath: /flags
+          restartPolicy: Never
           volumes:
-            - name: cookies-volume
-              emptyDir: {}
-            - name: shared-storage
+            - name: notion-poller-storage
               persistentVolumeClaim:
-                claimName: notion-data-pvc
+                claimName: notion-poller-pvc

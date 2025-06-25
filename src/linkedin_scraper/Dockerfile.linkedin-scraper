@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.52.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.53.0-jammy
 
 WORKDIR /app
 
@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir -e .
 ENV PYTHONPATH=/app/src
 
 # Run the linkedin scraper
-CMD ["python", "-m", "linkedin_scraper.scraper"] 
+CMD ["sh", "src/common/run-if-not-recent.sh", "/flags/last_run_timestamp_scraper.flag", "src/linkedin_scraper/scraper.py"]

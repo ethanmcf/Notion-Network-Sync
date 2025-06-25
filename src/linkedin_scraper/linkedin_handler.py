@@ -13,7 +13,7 @@ LINKEDIN_PASSWORD = os.getenv("LINKEDIN_PASSWORD")
 COOKIES_PATH = os.getenv("LINKEDIN_COOKIES_PATH")
 
 
-def login_and_save_cookies(page):
+def login(page):
     print("Not logged in, logging in...")
     page.goto("https://www.linkedin.com/login")
 
@@ -28,19 +28,6 @@ def login_and_save_cookies(page):
 
     print("Waiting for page to load...")
     page.wait_for_load_state("load")
-
-    # print("Saving cookies...")
-    # cookies = page.context.cookies()
-    # os.makedirs(os.path.dirname(COOKIES_PATH), exist_ok=True)
-    # with open(COOKIES_PATH, "w") as f:
-    #     import json
-    #     json.dump(cookies, f)
-
-def load_cookies(context):
-    if os.path.exists(COOKIES_PATH):
-        with open(COOKIES_PATH, "r") as f:
-            cookies = json.load(f)
-            context.add_cookies(cookies)
 
 def parse_date_str(date_string):
     """
@@ -165,13 +152,12 @@ def get_recent_contacts():
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
             viewport={"width": 1280, "height": 800}
         )
-        # load_cookies(context)
 
         page = context.new_page()
         page.goto("https://www.linkedin.com/messaging/")
 
         if "login" in page.url:
-            login_and_save_cookies(page)
+            login(page)
             page.goto("https://www.linkedin.com/messaging/")
         else:
             print("Already logged in")

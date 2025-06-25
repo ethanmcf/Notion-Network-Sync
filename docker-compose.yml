@@ -10,7 +10,9 @@ services:
       - LINKEDIN_PASSWORD=${LINKEDIN_PASSWORD}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
     volumes:
-      - ./src/linkedin_scraper/config:/app/src/linkedin_scraper/config
+      - ./src/linkedin_scraper:/app/src/linkedin_scraper
+      - ./src/common:/app/src/common
+      - ./flags:/flags
     profiles:
       - scraper
 
@@ -24,5 +26,7 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN}
     volumes:
       - ./src/notion_poller:/app/src/notion_poller
+      - ./src/common:/app/src/common
+      - ./flags:/flags
     profiles:
       - poller 
