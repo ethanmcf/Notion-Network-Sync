@@ -56,7 +56,7 @@ Include at **minimum** the following properties:
 
 ---
 
-## 3. Create a `.env` File
+## 3. Create a `.env` File and Kubernetes Secret
 
 In the root of your project, create a `.env` file with the following keys:
 
@@ -71,6 +71,17 @@ LINKEDIN_PASSWORD=your_password
 
 # OpenAI GPT
 GITHUB_TOKEN=your_key
+```
+
+You can get your GitHub token for free API access by following this guide:
+How to get GitHub token (YouTube)
+Watch from 0:21 to 1:14 — ensure you select the token scope for the "openai/gpt-4.1" model.
+
+Generate the Kubernetes Secret from your .env file
+Run the following command to create a Kubernetes secret named secrets in the k8s folder:
+
+```
+kubectl create secret generic secrets --from-env-file=k8s/.env
 ```
 
 ### 4. Build and Run Locally with Docker Compose
@@ -89,7 +100,7 @@ docker compose build notion-poller
 docker compose run --rm notion-poller
 ```
 
-### 5. Run Kubernetes Cronjobs
+### 5. Build and Run on Kubernetes Cronjobs
 
 ```
 minikube status # sees if running
@@ -98,7 +109,8 @@ eval $(minikube docker-env) # switch to minikube deamon
 docker compose build # build docker images
 kubectl apply -f k8s --recursive # apply cronjobs and pvc
 kubectl get cronjobs # Verify cronjobs
-kubectl get pvc -n default # Verify pvc
+kubectl get pvc # Verify pvc
+kubectl get secrets # Verify secrets
 eval $(minikube docker-env -u) # switch back to shell deamon
 
 # Check cronjob pod logs

@@ -35,6 +35,7 @@ src/linkedin_scraper/data/linkedin_data.db
 
 # Kubernetes
 minikube-darwin-amd64
+k8s/secrets.yaml
 
 # Flags
 flags/

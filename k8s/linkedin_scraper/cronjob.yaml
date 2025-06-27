@@ -19,6 +19,32 @@ spec:
               volumeMounts:
                 - name: linkedin-scraper-storage
                   mountPath: /flags
+              env:
+                - name: NOTION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: NOTION_API_KEY
+                - name: NOTION_DATABASE_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: NOTION_DATABASE_ID
+                - name: LINKEDIN_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: LINKEDIN_EMAIL
+                - name: LINKEDIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: LINKEDIN_PASSWORD
+                - name: GITHUB_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: GITHUB_TOKEN
           restartPolicy: Never
           volumes:
             - name: linkedin-scraper-storage
