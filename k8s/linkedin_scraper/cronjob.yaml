@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: linkedin-scraper-cronjob
 spec:
-  schedule: "*/5 * * * *" # every hour
+  schedule: "*/3 * * * *" # every hour
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -16,9 +16,6 @@ spec:
             - name: linkedin-scraper-cronjob
               image: linkedin-scraper:latest
               imagePullPolicy: IfNotPresent
-              volumeMounts:
-                - name: linkedin-scraper-storage
-                  mountPath: /flags
               env:
                 - name: NOTION_API_KEY
                   valueFrom:
@@ -45,8 +42,9 @@ spec:
                     secretKeyRef:
                       name: secrets
                       key: GITHUB_TOKEN
+                - name: PSQL_DATABASE_PATH
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: PSQL_DATABASE_PATH
           restartPolicy: Never
-          volumes:
-            - name: linkedin-scraper-storage
-              persistentVolumeClaim:
-                claimName: linkedin-scraper-pvc

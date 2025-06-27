@@ -71,10 +71,13 @@ LINKEDIN_PASSWORD=your_password
 
 # OpenAI GPT
 GITHUB_TOKEN=your_key
+
+# PSQL
+PSQL_DATABASE_URL=your_url
 ```
 
 You can get your GitHub token for free API access by following this guide:
-How to get GitHub token (YouTube)
+https://www.youtube.com/watch?v=YP8mV_2RDLc
 Watch from 0:21 to 1:14 — ensure you select the token scope for the "openai/gpt-4.1" model.
 
 Generate the Kubernetes Secret from your .env file
@@ -93,7 +96,7 @@ docker compose build linkedin-scraper
 docker compose run --rm linkedin-scraper
 ```
 
-### Notion Poller
+#### Notion Poller
 
 ```bash
 docker compose build notion-poller
@@ -104,6 +107,7 @@ docker compose run --rm notion-poller
 
 ```
 minikube status # sees if running
+minikube start # if not running
 
 eval $(minikube docker-env) # switch to minikube deamon
 docker compose build # build docker images

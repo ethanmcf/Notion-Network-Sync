@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: notion-poller-cronjob
 spec:
-  schedule: "*/5 * * * *" # every hour
+  schedule: "*/3 * * * *" # every hour
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -16,9 +16,6 @@ spec:
             - name: notion-poller-cronjob
               image: notion-poller:latest
               imagePullPolicy: IfNotPresent
-              volumeMounts:
-                - name: notion-poller-storage
-                  mountPath: /flags
               env:
                 - name: NOTION_API_KEY
                   valueFrom:
@@ -35,8 +32,9 @@ spec:
                     secretKeyRef:
                       name: secrets
                       key: GITHUB_TOKEN
+                - name: PSQL_DATABASE_PATH
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: PSQL_DATABASE_PATH
           restartPolicy: Never
-          volumes:
-            - name: notion-poller-storage
-              persistentVolumeClaim:
-                claimName: notion-poller-pvc

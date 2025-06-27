@@ -14,6 +14,7 @@ dependencies = [
     "python-dotenv", 
     "azure-ai-inference",
     "azure-core",
+    "psycopg2-binary",
 ] 
 
 [tool.setuptools]
