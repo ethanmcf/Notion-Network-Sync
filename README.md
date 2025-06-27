@@ -88,3 +88,20 @@ docker compose run --rm linkedin-scraper
 docker compose build notion-poller
 docker compose run --rm notion-poller
 ```
+
+### 5. Run Kubernetes Cronjobs
+
+```
+minikube status # sees if running
+
+eval $(minikube docker-env) # switch to minikube deamon
+docker compose build # build docker images
+kubectl apply -f k8s --recursive # apply cronjobs and pvc
+kubectl get cronjobs # Verify cronjobs
+kubectl get pvc -n default # Verify pvc
+eval $(minikube docker-env -u) # switch back to shell deamon
+
+# Check cronjob pod logs
+kubectl get pods
+kubctl logs POD_NAME
+```

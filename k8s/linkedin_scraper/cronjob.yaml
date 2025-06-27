@@ -3,7 +3,9 @@ kind: CronJob
 metadata:
   name: linkedin-scraper-cronjob
 spec:
-  schedule: "0 * * * *" # every hour
+  schedule: "*/5 * * * *" # every hour
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       name: linkedin-scraper-cronjob
@@ -12,7 +14,8 @@ spec:
         spec:
           containers:
             - name: linkedin-scraper-cronjob
-              image: linkedin-scraper
+              image: linkedin-scraper:latest
+              imagePullPolicy: IfNotPresent
               volumeMounts:
                 - name: linkedin-scraper-storage
                   mountPath: /flags

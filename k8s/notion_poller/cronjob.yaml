@@ -3,7 +3,9 @@ kind: CronJob
 metadata:
   name: notion-poller-cronjob
 spec:
-  schedule: "0 * * * *" # every hour
+  schedule: "*/5 * * * *" # every hour
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       name: notion-poller-cronjob
@@ -12,7 +14,8 @@ spec:
         spec:
           containers:
             - name: notion-poller-cronjob
-              image: notion-poller
+              image: notion-poller:latest
+              imagePullPolicy: IfNotPresent
               volumeMounts:
                 - name: notion-poller-storage
                   mountPath: /flags

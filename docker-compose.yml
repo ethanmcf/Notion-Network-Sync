@@ -3,6 +3,7 @@ services:
     build:
       context: src/
       dockerfile: linkedin_scraper/Dockerfile.linkedin-scraper
+    image: linkedin-scraper
     environment:
       - NOTION_API_KEY=${NOTION_API_KEY}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
@@ -13,13 +14,12 @@ services:
       - ./src/linkedin_scraper:/app/src/linkedin_scraper
       - ./src/common:/app/src/common
       - ./flags:/flags
-    profiles:
-      - scraper
 
   notion-poller:
     build:
       context: src/
       dockerfile: notion_poller/Dockerfile.notion-poller
+    image: notion-poller
     environment:
       - NOTION_API_KEY=${NOTION_API_KEY}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
@@ -28,5 +28,3 @@ services:
       - ./src/notion_poller:/app/src/notion_poller
       - ./src/common:/app/src/common
       - ./flags:/flags
-    profiles:
-      - poller 
