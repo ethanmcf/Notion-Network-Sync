@@ -1,44 +1,26 @@
-import psycopg2
-
+from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_PATH = os.getenv("PSQL_DATABASE_PATH")
+PSQL_URL = os.environ.get("PSQL_URL")
+PSQL_KEY = os.environ.get("PSQL_KEY")
+DB_NAME = "contact"
 
 def get_connection():
-    return psycopg2.connect(DATABASE_PATH)
-
-def create_table():
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("""
-                CREATE TABLE IF NOT EXISTS contact (
-                    name TEXT PRIMARY KEY,
-                    date_updated TIMESTAMP NOT NULL
-                )
-        """)
-        conn.commit()
+    supabase: Client = create_client(PSQL_URL, PSQL_KEY)
+    return supabase
 
 def add_contact(name, date_updated):
-    create_table()
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("INSERT INTO contact (name, date_updated) VALUES (%s, %s)", (name, date_updated))
-        conn.commit()
+    conn = get_connection()
+    conn.table(DB_NAME).insert({"name": name, "date_updated": date_updated}).execute()
 
 def get_contact_date_updated(name):
-    create_table()
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("SELECT date_updated FROM contact WHERE name = %s", (name,))
-        result = c.fetchone()
-        return result[0] if result else None
+    conn = get_connection()
+    result = conn.table(DB_NAME).select("date_updated").eq("name", name).execute()
+    return result.data[0]["date_updated"] if result.data else None
 
 def update_page_date_updated(name, date_updated):
-    create_table()
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("UPDATE contact SET date_updated = %s WHERE name = %s", (date_updated, name))
-        conn.commit()
+    conn = get_connection()
+    conn.table(DB_NAME).update({"date_updated": date_updated}).eq("name", name).execute()

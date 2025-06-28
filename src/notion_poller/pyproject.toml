@@ -13,7 +13,7 @@ dependencies = [
     "python-dotenv", 
     "azure-ai-inference",
     "azure-core",
-    "psycopg2-binary",
+    "supabase",
 ] 
 
 [tool.setuptools]

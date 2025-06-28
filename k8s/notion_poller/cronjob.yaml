@@ -32,9 +32,14 @@ spec:
                     secretKeyRef:
                       name: secrets
                       key: GITHUB_TOKEN
-                - name: PSQL_DATABASE_PATH
+                - name: PSQL_URL
                   valueFrom:
                     secretKeyRef:
                       name: secrets
-                      key: PSQL_DATABASE_PATH
+                      key: PSQL_URL
+                - name: PSQL_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: PSQL_KEY
           restartPolicy: Never

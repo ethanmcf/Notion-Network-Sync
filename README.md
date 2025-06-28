@@ -72,8 +72,9 @@ LINKEDIN_PASSWORD=your_password
 # OpenAI GPT
 GITHUB_TOKEN=your_key
 
-# PSQL
-PSQL_DATABASE_URL=your_url
+# PSQL Supabase
+PSQL_URL=your_url
+PSQL_KEY=your_key
 ```
 
 You can get your GitHub token for free API access by following this guide:
@@ -111,11 +112,14 @@ minikube start # if not running
 
 eval $(minikube docker-env) # switch to minikube deamon
 docker compose build # build docker images
-kubectl apply -f k8s --recursive # apply cronjobs and pvc
+kubectl apply -f k8s --recursive # apply cronjobs and secrets
 kubectl get cronjobs # Verify cronjobs
-kubectl get pvc # Verify pvc
 kubectl get secrets # Verify secrets
 eval $(minikube docker-env -u) # switch back to shell deamon
+
+# option to load image
+minikube image load notion-poller
+minikube image load linkedin-scraper
 
 # Check cronjob pod logs
 kubectl get pods

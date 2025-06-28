@@ -1,51 +1,33 @@
 import sys
-import psycopg2
+from supabase import create_client, Client
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_PATH = os.getenv("PSQL_DATABASE_PATH")
+PSQL_URL = os.environ.get("PSQL_URL")
+PSQL_KEY = os.environ.get("PSQL_KEY")
+DB_NAME = "servicerun"
 
 def get_connection():
-    return psycopg2.connect(DATABASE_PATH)
-
-def create_table():
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("""
-                CREATE TABLE IF NOT EXISTS runs (
-                    service_name TEXT PRIMARY KEY,
-                    last_run TIMESTAMP NOT NULL
-                )
-        """)
-        conn.commit()
+    supabase: Client = create_client(PSQL_URL, PSQL_KEY)
+    return supabase
 
 def should_exit(service_name):
-    with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT lastrun FROM runs WHERE service_name = %s",
-                (service_name,)
-            )
-            result = cur.fetchone()
-            if result is None or result[0] < datetime.now() - timedelta(days=2):
-                # No record for service_name, exit 0
-                print(f"No record for service '{service_name}'. Exiting with code 0.")
-                sys.exit(0)
-
-            # Update lastrun to current time
-            now = datetime.now()
-            cur.execute(
-                "UPDATE runs SET lastrun = %s WHERE service_name = %s",
-                (now, service_name)
-            )
-            conn.commit()
-            print(f"Updated lastrun to {now} for service '{service_name}'")
-            sys.exit(1)
+    conn = get_connection()
+    result = conn.table(DB_NAME).select("last_run").eq("service_name", service_name).execute()
+    if not result.data or result.data[0]["last_run"] < str(datetime.now() - timedelta(days=2)):
+        if not result.data:
+            conn.table(DB_NAME).insert({"service_name": service_name, "last_run": str(datetime.now())}).execute()
+        else:
+            conn.table(DB_NAME).update({"last_run": str(datetime.now())}).eq("service_name", service_name).execute()
+        sys.exit(1)
+    else:
+        print(f"Service {service_name} has run recently at {result.data[0]['last_run']}")
+        sys.exit(0)
 
 if __name__ == "__main__":
     service_name = sys.argv[1]
-    create_table()
+    print(f"Checking if {service_name} has run recently")
     should_exit(service_name)

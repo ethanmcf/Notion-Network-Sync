@@ -6,6 +6,7 @@ load_dotenv()
 
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
 DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
+MAX_CHARS = 2000
 
 notion = Client(auth=NOTION_API_KEY)
 
@@ -25,9 +26,8 @@ def _parse_notion_contact(page_json):
     info = {
         "Company": extract_rich_text(props.get("Company", {})),
         "Last Communicated": extract_date(props.get("Last Communicated", {})),
-        "LinkedIn URL": page_json.get("url")
+        "LinkedIn URL": page_json.get("url"),
     }
-    # TODO: Add formatted notes and personal notes, email, phone, 
     return name, info
 
 def _create_heading_block(text, level=2):
@@ -146,9 +146,10 @@ def update_page_formatted_notes(page_id, formatted_notes):
             notion.blocks.delete(block["id"])
     
     # Add new formatted notes
-    children = [
-        _create_paragraph_block(formatted_notes)
-    ]
+    children = []
+    for i in range(0, len(formatted_notes), MAX_CHARS):
+        block = formatted_notes[i:i+MAX_CHARS]
+        children.append(_create_paragraph_block(block))
     notion.blocks.children.append(page_id, children=children)
 
 def get_pages_and_update_times():

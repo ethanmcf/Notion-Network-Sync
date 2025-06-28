@@ -10,10 +10,8 @@ services:
       - LINKEDIN_EMAIL=${LINKEDIN_EMAIL}
       - LINKEDIN_PASSWORD=${LINKEDIN_PASSWORD}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-    volumes:
-      - ./src/linkedin_scraper:/app/src/linkedin_scraper
-      - ./src/common:/app/src/common
-      - ./flags:/flags
+      - PSQL_URL=${PSQL_URL}
+      - PSQL_KEY=${PSQL_KEY}
 
   notion-poller:
     build:
@@ -24,7 +22,5 @@ services:
       - NOTION_API_KEY=${NOTION_API_KEY}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-    volumes:
-      - ./src/notion_poller:/app/src/notion_poller
-      - ./src/common:/app/src/common
-      - ./flags:/flags
+      - PSQL_URL=${PSQL_URL}
+      - PSQL_KEY=${PSQL_KEY}
