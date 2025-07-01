@@ -109,19 +109,17 @@ docker compose run --rm notion-poller
 ```
 minikube status # sees if running
 minikube start # if not running
+kubectl get namespace # Verify notion-sync namespace
+kubectl create namespace notion-sync  # Run if no namespace
 
-eval $(minikube docker-env) # switch to minikube deamon
 docker compose build # build docker images
-kubectl apply -f k8s --recursive # apply cronjobs and secrets
-kubectl get cronjobs # Verify cronjobs
-kubectl get secrets # Verify secrets
-eval $(minikube docker-env -u) # switch back to shell deamon
-
-# option to load image
 minikube image load notion-poller
 minikube image load linkedin-scraper
+kubectl apply -f k8s --recursive -n notion-sync # apply cronjobs and secrets
+kubectl get cronjobs -n notion-sync # Verify cronjobs
+kubectl get secrets -n notion-sync # Verify secrets
 
 # Check cronjob pod logs
-kubectl get pods
-kubctl logs POD_NAME
+kubectl get pods -n notion-sync
+kubctl logs POD_NAME -n notion-sync
 ```

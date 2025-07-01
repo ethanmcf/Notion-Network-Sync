@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: linkedin-scraper-cronjob
 spec:
-  schedule: "*/3 * * * *" # every hour
+  schedule: "* 0 * * *" # every hour
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
