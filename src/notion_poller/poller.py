@@ -3,13 +3,16 @@ from datetime import datetime
 from notion_poller import database_handler as db
 from common import notion_handler as notion
 from common import gpt_handler as gpt
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 def poll_notion():
     pages = notion.get_pages_and_update_times() # returns list of page ids
-    print(f"Polling {len(pages)} pages")
-    for page_id, date_updated, name in pages:
+    print(f"Polling {min(len(pages), 10)} pages")
+    for page_id, date_updated, name in pages[:10]:
         last_updated = db.get_page_date_updated(page_id) 
         date_updated = datetime.strptime(date_updated[:10], "%Y-%m-%d")
         date_updated = date_updated.strftime("%Y-%m-%d")

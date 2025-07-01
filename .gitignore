@@ -21,7 +21,6 @@ playwright-report/
 .env
 venv
 *.env
-src/linkedin_scraper/config/cookies.json
 
 # Docker
 *.log
