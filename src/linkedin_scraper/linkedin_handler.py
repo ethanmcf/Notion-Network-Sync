@@ -1,5 +1,4 @@
 import os
-import json
 import re
 from datetime import date
 from dotenv import load_dotenv
@@ -171,7 +170,7 @@ def get_recent_contacts():
         contact_elements = page.query_selector_all("li[id*='ember'].msg-conversation-listitem")
 
         scraped_contacts = []
-        for contact in contact_elements[:3]:  # Limit to 10 contacts
+        for contact in contact_elements[:7]:  # Limit to 7 contacts
             try:
                 # unread = True if contact.query_selector(".msg-conversation-card__unread-count .notification-badge__count") else False
                 

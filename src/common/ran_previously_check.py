@@ -17,11 +17,13 @@ def get_connection():
 def should_exit(service_name):
     conn = get_connection()
     result = conn.table(DB_NAME).select("last_run").eq("service_name", service_name).execute()
-    if not result.data or result.data[0]["last_run"] < str(datetime.now() - timedelta(days=2)):
+    days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+    if not result.data or result.data[0]["last_run"] < days_ago:
+        now = datetime.now().strftime("%Y-%m-%d")
         if not result.data:
-            conn.table(DB_NAME).insert({"service_name": service_name, "last_run": str(datetime.now())}).execute()
+            conn.table(DB_NAME).insert({"service_name": service_name, "last_run": now}).execute()
         else:
-            conn.table(DB_NAME).update({"last_run": str(datetime.now())}).eq("service_name", service_name).execute()
+            conn.table(DB_NAME).update({"last_run": now}).eq("service_name", service_name).execute()
         sys.exit(1)
     else:
         print(f"Service {service_name} has run recently at {result.data[0]['last_run']}")
